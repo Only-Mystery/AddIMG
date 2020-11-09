@@ -16,6 +16,8 @@ And return a PNG file with 300x300 resolution form original `test.jpg`
 
 See [Deploy](./deploy.md) for more information.
 
+[中文部署文档](./deploy_cn.md)
+
 ## Features
 
 - Support multiple input formats (Thanks to Pillow).
@@ -24,4 +26,4 @@ See [Deploy](./deploy.md) for more information.
 - Support to limit max resolution
 
 ## License
-AddIMG is released under the MIT License. See LICENSE for more information.
+AddIMG is released under the MIT License. See [LICENSE](./LICENSE) for more information.

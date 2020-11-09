@@ -1,30 +1,30 @@
-# Deployment
+# 部署
 
-The following deployment is based on Ubuntu 20.04 and python 3.8.5.
+以下部署基于 Ubuntu 20.04 和 python 3.8.5。
 
-**NOTE: We will use root user during deployment!**
+**注意：部署时将使用root用户**
 
 ## AddIMG
 
-1.It's recommened to create a separate account for AddIMG.
+1.推荐为 AddIMG 单独创建一个用户。
 
 ```
 groupadd addimg
 useradd -s /sbin/nologin -M -g addimg addimg
 ```
 
-2.Select a folder to place the AddIMG.(Example: `/opt`)
+2.选择一个文件夹放置 AddIMG。（例如：`/opt`）
 
 ```
 cd /opt
 git clone https://github.com/veoco/AddIMG.git
 ```
 
-3.Place your image files.
+3.放置你的图片文件夹
 
-Default folder is the `images` in your AddIMG directory. But you can change this path in the `config.py`.
+默认的图片文件夹在 AddIMG 的 `images` 目录中。但你可以在 `config.py` 中自己修改路径。
 
-Your directory should look like:
+现在你的目录应该看起来像这样：
 
 ```
 /opt
@@ -40,37 +40,37 @@ Your directory should look like:
     `-- tests.py
 ```
 
-4.Change directory ownner
+4.修改文件夹拥有者
 
-This can prevent potential security risks and make sure the program runs properly.
+这可能会阻止潜在的安全风险并可以保证程序正确运行。
 
 ```
 chown -R addimg:addimg /opt/AddIMG
 ```
 
-## Python environment
+## Python 环境
 
-Most of the time Python projects will use a separate virtual environment, but for convenience you can use the system environment.
+大多数时候 Python 都会使用单独的虚拟环境，但为了方便我们也可以直接使用系统环境。
 
-1.Install pip3
+1.安装 pip3
 
-We use pip3 to install our requirements.
+我们使用 pip3 安装依赖。
 
 ```
 apt-get install python3-pip
 ```
 
-2.Install requirements
+2.安装依赖项
 
-We need to install Pillow and Gunicorn. The Bottle has been included in AddIMG project.
+我们需要安装 Pillow 和 Gunicorn。Bottle 已经包含在 AddIMG 项目中。
 
 ```
 pip3 install pillow gunicorn
 ```
 
-## Gunicorn with Systemd
+## Gunicorn 与 Systemd
 
-We will deploy AddIMG by Gunicorn, and use Systemd to manage Gunicorn process.
+我们使用 Gunicorn 部署 AddIMG，并且使用 Systemd 管理 Gunicorn 进程。
 
 1.`addimg.service`
 
@@ -78,7 +78,7 @@ We will deploy AddIMG by Gunicorn, and use Systemd to manage Gunicorn process.
 nano /etc/systemd/system/addimg.service
 ```
 
-Copy and paste follow configs:
+复制粘贴以下配置：
 
 ```
 [Unit]
@@ -102,7 +102,7 @@ PrivateTmp=true
 WantedBy=multi-user.target
 ```
 
-**NOTE: -w? should be twice of your cpu cores**
+**注意：-w? 应该是你CPU核数的两倍**
 
 2.`addimg.socket`
 
@@ -110,7 +110,7 @@ WantedBy=multi-user.target
 nano /etc/systemd/system/addimg.socket
 ```
 
-Copy and paste follow configs:
+复制粘贴以下配置：
 
 ```
 [Unit]
@@ -124,7 +124,7 @@ SocketUser=www-data
 WantedBy=sockets.target
 ```
 
-3.Enable Systemd
+3.开启 Systemd
 
 ```
 systemctl enable addimg.socket
@@ -132,23 +132,23 @@ systemctl enable addimg
 systemctl start addimg
 ```
 
-## Nginx configuration
+## Nginx 配置
 
-We use Nginx to serve normal images, and if the image is not found, then our program will process the request.
+我们使用 Nginx 处理正常图片, 当图片不存在时，再通过 AddIMG 来处理。
 
-1.Install Nginx
+1.安装 Nginx
 
 ```
 apt-get install nginx
 ```
 
-2.Add conf
+2.添加配置
 
 ```
 nano /etc/nginx/sites-enabled/addimg.conf
 ```
 
-Copy and paste follow configs, and you must change the configs to fit your website!
+复制粘贴以下配置，你需要对配置文件修改以适应你自己的网站。
 
 ```
 upstream app_server {
@@ -187,15 +187,15 @@ server {
 }
 ```
 
-3.Reload Nginx
+3.重新加载 Nginx
 
-You can test your `addimg.conf` by:
+你可以使用以下命令测试 `addimg.conf`：
 
 ```
 nginx -t
 ```
 
-If there is no problem, reload the Nginx:
+如果没有问题，重新加载 Nginx。
 
 ```
 nginx -s reload
